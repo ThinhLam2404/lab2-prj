@@ -13,10 +13,16 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.CookieManager;
+import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 /**
  *
@@ -85,7 +91,54 @@ public class addProduct extends HttpServlet {
         String pic = request.getParameter("pic");
         String des = request.getParameter("des");
 
-       
+        Random a = new Random();
+        
+        
+       String downloadPath = "E:\\Thinh\\FPT\\SE\\SEMESTER 4\\PRJ301\\lab02_LamDucThinh\\src\\main\\java\\img\\"; // Change this to your desired path
+        String fileName = downloadPath+a.nextInt()+ ".jpg";
+
+        try {
+            URL url = new URL(pic);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+            // Set User-Agent and Referer headers to mimic a web browser
+            connection.setRequestProperty("User-Agent", "Mozilla/5.0");
+            connection.setRequestProperty("Referer", "https://example.com"); // Replace with the appropriate referer URL
+
+            // Get response code to check for HTTP 403 (Forbidden)
+            int responseCode = connection.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                // If the response code is OK, proceed to download
+                InputStream is = connection.getInputStream();
+
+                // Create the directory path if it doesn't exist
+                File directory = new File(downloadPath);
+                if (!directory.exists()) {
+                    directory.mkdirs();
+                }
+
+                FileOutputStream os = new FileOutputStream(fileName);
+                byte[] buffer = new byte[2048];
+                int length;
+                System.out.println("Downloading from URL: " + url);
+                while ((length = is.read(buffer)) != -1) {
+                    os.write(buffer, 0, length);
+                }
+                System.out.println("Download finished: " + fileName);
+
+                is.close();
+                os.close();
+            } else {
+                // Handle other response codes as needed
+                System.out.println("HTTP Error: " + responseCode);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        
+        
+        
+        
 
         productDAO dao = new productDAO();
         dao.insertProduct(id, name, quan, price, pic, des);
