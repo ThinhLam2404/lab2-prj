@@ -1,0 +1,5 @@
+connection\connectDB.class
+DAO\accountDAO.class
+DAO\productDAO.class
+model\Product.class
+model\Account.class
