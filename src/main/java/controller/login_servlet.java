@@ -86,6 +86,7 @@ public class login_servlet extends HttpServlet {
 
         String md5 = getMd5(pass).toUpperCase();
 
+        boolean check = true;
         for (Account account1 : listAccount) {
             if (user.equals(account1.getUsername()) && md5.equals(account1.getPassword())) {
                 name = account1.getFullname();
@@ -93,7 +94,7 @@ public class login_servlet extends HttpServlet {
 
                 session.setAttribute("name", name);
                 session.setAttribute("user", user);
-                
+
                 //luu acc tren cookie
                 Cookie u = new Cookie("userC", user);
                 Cookie p = new Cookie("passC", pass);
@@ -102,18 +103,20 @@ public class login_servlet extends HttpServlet {
                 //luu user va pass len trinh duyet  
                 response.addCookie(p);
                 response.addCookie(u);
-
+                check = false;
                 response.sendRedirect("listBack");
 
 //                request.getRequestDispatcher("list.jsp").forward(request, response);
-            } else {
-                ms = "<div style=\"color: red;\">Invalid email or password.</div>";
-                request.setAttribute("ms", ms);
-
             }
+
+        }
+        if (check) {
+            ms = "<div style=\"color: red;\">Invalid email or password.</div>";
+            request.setAttribute("ms", ms);
+            request.getRequestDispatcher("index.jsp").forward(request, response);
+
         }
 
-//        request.getRequestDispatcher("index.jsp").forward(request, response);
     }
 
     /**

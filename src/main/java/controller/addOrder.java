@@ -114,6 +114,8 @@ public class addOrder extends HttpServlet {
                 tmp = product.getPro_quan() - temp;
             }
         }
+        
+        //update lai gia tri cua quanlity sau khi co nguoi mua 
         String quan = Integer.toString(tmp);
         pdao.updateQuan(quan, proName);
 //        request.setAttribute("listProduct", listP);
